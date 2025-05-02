@@ -1,0 +1,53 @@
+<div class="container">
+  <div class="row mb-4">
+    <div class="col">
+      <h1>Application Details</h1>
+      <%= link_to 'Back to Course', instructor_course_path(@course), class: 'btn btn-secondary' %>
+      <% if @application.status == 'pending' %>
+        <div class="float-end">
+          <%= button_to 'Approve', approve_instructor_course_application_path(@course, @application), 
+              method: :patch, 
+              class: 'btn btn-success me-2',
+              form: { style: 'display: inline-block;' } %>
+          <%= button_to 'Reject', reject_instructor_course_application_path(@course, @application), 
+              method: :patch, 
+              class: 'btn btn-danger',
+              data: { confirm: 'Are you sure you want to reject this application?' },
+              form: { style: 'display: inline-block;' } %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-header">
+      <h4><%= @course.subject %> <%= @course.course_number %> - <%= @course.title %></h4>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <p><strong>Student:</strong> <%= @application.user.email %></p>
+          <p><strong>Status:</strong> 
+            <span class="badge <%= @application.status == 'pending' ? 'bg-warning' : (@application.status == 'approved' ? 'bg-success' : 'bg-danger') %>">
+              <%= @application.status.titleize %>
+            </span>
+          </p>
+          <p><strong>Position Type:</strong> <%= @application.position_type.titleize %></p>
+          <p><strong>Available Hours:</strong> <%= @application.available_hours %> hours/week</p>
+          <p><strong>Submitted:</strong> <%= @application.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>Programming Languages:</strong> <%= @application.programming_languages %></p>
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col">
+          <h5>Experience:</h5>
+          <div class="border p-3 bg-light">
+            <%= simple_format(@application.experience) %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

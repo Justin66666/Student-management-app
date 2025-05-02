@@ -1,0 +1,98 @@
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <h1><%= @course.subject %> <%= @course.course_number %> - <%= @course.title %></h1>
+      <p class="text-muted">
+        Term: <%= @course.formatted_term %> | Campus: <%= @course.formatted_campus %>
+      </p>
+      <div class="d-flex mb-4">
+        <%= link_to 'View Recommendations', instructor_course_recommendation_letters_path(@course), class: 'btn btn-info me-2' %>
+        <%= link_to 'Submit Recommendation', new_instructor_course_recommendation_letter_path(@course), class: 'btn btn-success' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col">
+      <h2>Applications</h2>
+      <% if @course.applications.any? %>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Position</th>
+                <th>Experience</th>
+                <th>Programming Languages</th>
+                <th>Available Hours</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @course.applications.each do |application| %>
+                <tr>
+                  <td><%= application.user.email %></td>
+                  <td><%= application.position_type.titleize %></td>
+                  <td><%= truncate(application.experience, length: 50) %></td>
+                  <td><%= application.programming_languages %></td>
+                  <td><%= application.available_hours %> hrs/week</td>
+                  <td>
+                    <span class="badge <%= application.status == 'pending' ? 'bg-warning' : (application.status == 'approved' ? 'bg-success' : 'bg-danger') %>">
+                      <%= application.status.titleize %>
+                    </span>
+                  </td>
+                  <td>
+                    <%= link_to 'View', instructor_course_application_path(@course, application), class: 'btn btn-sm btn-info' %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <div class="alert alert-info">
+          No applications submitted for this course yet.
+        </div>
+      <% end %>
+    </div>
+  </div>
+  
+  <div class="row mt-4">
+    <div class="col">
+      <h2>Sections</h2>
+      <% if @course.sections.any? %>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Section Number</th>
+                <th>Instructor</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @course.sections.each do |section| %>
+                <tr>
+                  <td><%= section.number %></td>
+                  <td><%= section.instructor_name %></td>
+                  <td>
+                    <%= link_to 'View Graders', instructor_course_section_graders_path(@course, section), class: 'btn btn-sm btn-info' %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <div class="alert alert-info">
+          No sections available for this course.
+        </div>
+      <% end %>
+    </div>
+  </div>
+  
+  <div class="mt-4">
+    <%= link_to 'Back to Courses', instructor_courses_path, class: 'btn btn-secondary' %>
+  </div>
+</div> 

@@ -1,0 +1,43 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold">Reload Courses</h1>
+    <%= link_to "← Back to Courses", admin_courses_path, class: "bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" %>
+  </div>
+
+  <%= form_tag admin_courses_reload_path, method: :post, class: "max-w-md" do %>
+    <div class="mb-4">
+      <label class="block text-gray-700 text-sm font-bold mb-2" for="term">
+        Term
+      </label>
+      <%= select_tag :term, 
+          options_for_select([
+            ['Spring 2025', '1252'],
+            ['Summer 2025', '1254'],
+            ['Autumn 2025', '1258']
+          ], params[:term] || '1252'),
+          class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+      %>
+    </div>
+
+    <div class="mb-4">
+      <label class="block text-gray-700 text-sm font-bold mb-2" for="campus">
+        Campus
+      </label>
+      <%= select_tag :campus,
+          options_for_select([
+            ['Columbus', 'col'],
+            ['Lima', 'lma'],
+            ['Mansfield', 'mns'],
+            ['Marion', 'mrn'],
+            ['Newark', 'nwk']
+          ], params[:campus] || 'col'),
+          class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+      %>
+    </div>
+
+    <div class="flex items-center justify-between mt-6">
+      <%= submit_tag "Reload Courses", class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" %>
+      <%= link_to "Back to Main Dashboard", root_path, class: "bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" %>
+    </div>
+  <% end %>
+</div>

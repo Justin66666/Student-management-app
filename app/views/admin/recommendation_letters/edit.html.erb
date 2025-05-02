@@ -1,0 +1,103 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <h1>Edit Recommendation Letter</h1>
+      
+      <%= form_with(model: [:admin, @recommendation_letter], local: true, class: 'mt-4') do |f| %>
+        <% if @recommendation_letter.errors.any? %>
+          <div class="alert alert-danger">
+            <h2><%= pluralize(@recommendation_letter.errors.count, "error") %> prohibited this recommendation from being saved:</h2>
+            <ul>
+              <% @recommendation_letter.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+        
+        <div class="card mb-4">
+          <div class="card-header">
+            <h4>Recommendation Status</h4>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <%= f.label :status, 'Status', class: 'form-label' %>
+              <%= f.select :status, 
+                  [['Pending', 'pending'], ['Approved', 'approved'], ['Rejected', 'rejected']], 
+                  {}, 
+                  { class: 'form-select' } %>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card mb-4">
+          <div class="card-header">
+            <h4>Recommender Information</h4>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <%= f.label :instructor_name, 'Instructor Name', class: 'form-label' %>
+              <%= f.text_field :instructor_name, class: 'form-control' %>
+            </div>
+            
+            <div class="mb-3">
+              <%= f.label :instructor_email, 'Instructor Email', class: 'form-label' %>
+              <%= f.email_field :instructor_email, class: 'form-control' %>
+              <div class="form-text">Must be a valid OSU email (name.#@osu.edu)</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card mb-4">
+          <div class="card-header">
+            <h4>Student Information</h4>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <%= f.label :student_name, 'Student Name', class: 'form-label' %>
+              <%= f.text_field :student_name, class: 'form-control' %>
+            </div>
+            
+            <div class="mb-3">
+              <%= f.label :student_email, 'Student Email', class: 'form-label' %>
+              <%= f.email_field :student_email, class: 'form-control' %>
+              <div class="form-text">Must be a valid OSU email (name.#@osu.edu)</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card mb-4">
+          <div class="card-header">
+            <h4>Course Information</h4>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <%= f.label :course_id, 'Course', class: 'form-label' %>
+              <%= f.collection_select :course_id, Course.all.order(:subject, :course_number), :id, 
+                  ->(course) { "#{course.subject} #{course.course_number} - #{course.title}" }, 
+                  {}, 
+                  { class: 'form-select' } %>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card mb-4">
+          <div class="card-header">
+            <h4>Recommendation Content</h4>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <%= f.label :content, 'Content', class: 'form-label' %>
+              <%= f.text_area :content, class: 'form-control', rows: 8 %>
+            </div>
+          </div>
+        </div>
+        
+        <div class="d-flex justify-content-between mt-4">
+          <%= link_to 'Cancel', admin_recommendation_letter_path(@recommendation_letter), class: 'btn btn-secondary' %>
+          <%= f.submit 'Update Recommendation', class: 'btn btn-primary' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div> 

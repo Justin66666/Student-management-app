@@ -1,0 +1,47 @@
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <h1>Graders for Section <%= @section.number %></h1>
+      <p class="text-muted">
+        Course: <%= @course.subject %> <%= @course.course_number %> - <%= @course.title %>
+      </p>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col">
+      <% if @graders.present? %>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Position</th>
+                <th>Hours per week</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @graders.each do |grader| %>
+                <tr>
+                  <td><%= grader.user.name rescue 'N/A' %></td>
+                  <td><%= grader.user.email rescue 'N/A' %></td>
+                  <td><%= grader.position_type.titleize %></td>
+                  <td><%= grader.hours_per_week %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <div class="alert alert-info">
+          No graders have been assigned to this section.
+        </div>
+      <% end %>
+    </div>
+  </div>
+  
+  <div class="mt-4">
+    <%= link_to 'Back to Course', instructor_course_path(@course), class: 'btn btn-secondary' %>
+  </div>
+</div> 

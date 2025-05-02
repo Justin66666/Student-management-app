@@ -1,0 +1,69 @@
+<div class="container">
+  <div class="row mb-4">
+    <div class="col">
+      <% if @course %>
+        <h1>Recommendations for <%= @course.subject %> <%= @course.course_number %></h1>
+        <%= link_to 'New Recommendation', new_instructor_course_recommendation_letter_path(@course), class: 'btn btn-primary float-end' %>
+      <% else %>
+        <h1>My Recommendation Letters</h1>
+      <% end %>
+    </div>
+  </div>
+
+  <% if @recommendation_letters.any? %>
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Student</th>
+            <th>Course</th>
+            <th>Status</th>
+            <th>Submitted</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @recommendation_letters.each do |letter| %>
+            <tr>
+              <td><%= letter.id %></td>
+              <td>
+                <%= letter.student_name %>
+                <br>
+                <small class="text-muted"><%= letter.student_email %></small>
+              </td>
+              <td>
+                <%= letter.course.subject %> <%= letter.course.course_number %>
+                <br>
+                <small class="text-muted"><%= letter.course.title %></small>
+              </td>
+              <td>
+                <span class="badge <%= letter.status == 'pending' ? 'bg-warning' : (letter.status == 'approved' ? 'bg-success' : 'bg-danger') %>">
+                  <%= letter.status.titleize %>
+                </span>
+              </td>
+              <td><%= letter.created_at.strftime("%B %d, %Y") %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="alert alert-info">
+      <p class="mb-0">
+        <% if @course %>
+          No recommendation letters have been submitted for this course yet.
+        <% else %>
+          You haven't submitted any recommendation letters yet.
+        <% end %>
+      </p>
+    </div>
+  <% end %>
+  
+  <div class="mt-4">
+    <% if @course %>
+      <%= link_to 'Back to Course', instructor_course_path(@course), class: 'btn btn-secondary' %>
+    <% else %>
+      <%= link_to 'Back to Courses', instructor_courses_path, class: 'btn btn-secondary' %>
+    <% end %>
+  </div>
+</div> 

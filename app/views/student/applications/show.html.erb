@@ -1,0 +1,45 @@
+<div class="container">
+  <div class="row mb-4">
+    <div class="col">
+      <h1>Application Details</h1>
+      <%= link_to 'Back to Applications', student_applications_path, class: 'btn btn-secondary' %>
+      <% if @application.status == 'pending' %>
+        <%= button_to 'Withdraw Application', student_application_path(@application), 
+            method: :delete, 
+            class: 'btn btn-danger',
+            data: { confirm: 'Are you sure you want to withdraw this application?' } %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-header">
+      <h4><%= @application.course.subject %> <%= @application.course.course_number %> - <%= @application.course.title %></h4>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <p><strong>Status:</strong> 
+            <span class="badge <%= @application.status == 'pending' ? 'bg-warning' : (@application.status == 'approved' ? 'bg-success' : 'bg-danger') %>">
+              <%= @application.status.titleize %>
+            </span>
+          </p>
+          <p><strong>Position Type:</strong> <%= @application.position_type.titleize %></p>
+          <p><strong>Available Hours:</strong> <%= @application.available_hours %> hours/week</p>
+          <p><strong>Submitted:</strong> <%= @application.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>Programming Languages:</strong> <%= @application.programming_languages %></p>
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col">
+          <h5>Experience:</h5>
+          <div class="border p-3 bg-light">
+            <%= simple_format(@application.experience) %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

@@ -1,0 +1,163 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <h1>Recommendation Letter Details</h1>
+      
+      <div class="d-flex justify-content-end mb-4">
+        <%= link_to 'Edit', edit_admin_recommendation_letter_path(@recommendation_letter), class: 'btn btn-primary me-2' %>
+        <%= button_to 'Delete', admin_recommendation_letter_path(@recommendation_letter), 
+            method: :delete, 
+            class: 'btn btn-danger',
+            data: { confirm: 'Are you sure you want to delete this recommendation letter?' },
+            form: { style: 'display: inline-block;' } %>
+      </div>
+      
+      <div class="card mb-4">
+        <div class="card-header">
+          <h4>Recommendation Details</h4>
+        </div>
+        <div class="card-body">
+          <p><strong>Recommendation ID:</strong> <%= @recommendation_letter.id %></p>
+          <p><strong>Status:</strong> 
+            <span class="badge <%= @recommendation_letter.status == 'pending' ? 'bg-warning' : (@recommendation_letter.status == 'approved' ? 'bg-success' : 'bg-danger') %>">
+              <%= @recommendation_letter.status.titleize %>
+            </span>
+          </p>
+          <p><strong>Submitted on:</strong> <%= @recommendation_letter.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+        </div>
+      </div>
+      
+      <div class="card mb-4">
+        <div class="card-header">
+          <h4>Recommender Information</h4>
+        </div>
+        <div class="card-body">
+          <p><strong>Name:</strong> <%= @recommendation_letter.instructor_name %></p>
+          <p><strong>Email:</strong> <%= @recommendation_letter.instructor_email %></p>
+        </div>
+      </div>
+      
+      <div class="card mb-4">
+        <div class="card-header">
+          <h4>Student Information</h4>
+        </div>
+        <div class="card-body">
+          <p><strong>Name:</strong> <%= @recommendation_letter.student_name %></p>
+          <p><strong>Email:</strong> <%= @recommendation_letter.student_email %></p>
+          <% student = User.find_by(email: @recommendation_letter.student_email) %>
+          <% if student %>
+            <p><strong>Student Status:</strong> Registered in system</p>
+            <p><strong>Student Role:</strong> <%= student.role.titleize %></p>
+          <% else %>
+            <p><strong>Student Status:</strong> <span class="text-danger">Not registered in system</span></p>
+          <% end %>
+        </div>
+      </div>
+      
+      <% student_user = User.find_by(email: @recommendation_letter.student_email) %>
+      <% if student_user %>
+        <% student_application = Application.find_by(user_id: student_user.id, course_id: @recommendation_letter.course_id) %>
+        <div class="card mb-4">
+          <div class="card-header">
+            <h4>Student Application Status</h4>
+          </div>
+          <div class="card-body">
+            <% if student_application %>
+              <p><strong>Application Status:</strong> 
+                <span class="badge <%= student_application.status == 'pending' ? 'bg-warning' : (student_application.status == 'approved' ? 'bg-success' : 'bg-danger') %>">
+                  <%= student_application.status.titleize %>
+                </span>
+              </p>
+              <p><strong>Position:</strong> <%= student_application.position_type.to_s.titleize %></p>
+              <p><strong>Experience:</strong> <%= student_application.experience %></p>
+              <p><strong>Available Hours:</strong> <%= student_application.available_hours %> hrs/week</p>
+              
+              <% if student_application.status == 'pending' %>
+                <div class="mt-3">
+                  <h5>Actions</h5>
+                  <div class="btn-group">
+                    <%= button_to admin_course_application_path(@recommendation_letter.course, student_application, status: 'approved'),
+                        method: :patch,
+                        class: 'btn btn-success me-2',
+                        style: 'display: inline-block;' do %>
+                      Approve Application
+                    <% end %>
+                    
+                    <%= button_to admin_course_application_path(@recommendation_letter.course, student_application, status: 'rejected'),
+                        method: :patch,
+                        class: 'btn btn-danger',
+                        style: 'display: inline-block;' do %>
+                      Reject Application
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            <% else %>
+              <div class="alert alert-info">
+                <p class="mb-0">Student has not applied for this course yet.</p>
+              </div>
+              <div class="mt-3">
+                <p>Since the student has been recommended, you can create an application for them:</p>
+                <%= link_to 'Create Application for Student', new_admin_course_application_path(@recommendation_letter.course, student_email: @recommendation_letter.student_email), class: 'btn btn-primary' %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+      
+      <div class="card mb-4">
+        <div class="card-header">
+          <h4>Course Information</h4>
+        </div>
+        <div class="card-body">
+          <p><strong>Course:</strong> <%= @recommendation_letter.course.subject %> <%= @recommendation_letter.course.course_number %> - <%= @recommendation_letter.course.title %></p>
+          <p><strong>Term:</strong> <%= @recommendation_letter.course.term %></p>
+          <p><strong>Campus:</strong> <%= @recommendation_letter.course.campus %></p>
+        </div>
+      </div>
+      
+      <div class="card mb-4">
+        <div class="card-header">
+          <h4>Recommendation Content</h4>
+        </div>
+        <div class="card-body">
+          <div class="p-3 bg-light border rounded">
+            <%= simple_format(@recommendation_letter.content) %>
+          </div>
+        </div>
+      </div>
+      
+      <div class="d-flex justify-content-between mt-4">
+        <div>
+          <%= link_to admin_recommendation_letters_path, class: 'btn btn-secondary' do %>
+            <i class="bi bi-arrow-left"></i> Back to Recommendations
+          <% end %>
+          
+          <%= link_to admin_users_path, class: 'btn btn-primary ms-2' do %>
+            <i class="bi bi-house-door"></i> Back to Dashboard
+          <% end %>
+        </div>
+        <div>
+          <% if @recommendation_letter.status == 'pending' %>
+            <div class="alert alert-info mb-3">
+              <p class="mb-0"><strong>Note:</strong> Approving this recommendation will automatically create an application for the student or approve an existing one.</p>
+            </div>
+            <%= button_to admin_recommendation_letter_path(@recommendation_letter, status: 'approved'),
+                method: :patch,
+                class: 'btn btn-success me-2',
+                style: 'display: inline-block;' do %>
+              Approve
+            <% end %>
+            
+            <%= button_to admin_recommendation_letter_path(@recommendation_letter, status: 'rejected'),
+                method: :patch,
+                class: 'btn btn-danger',
+                style: 'display: inline-block;' do %>
+              Reject
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

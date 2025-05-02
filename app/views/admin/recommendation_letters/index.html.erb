@@ -1,0 +1,132 @@
+<div class="container">
+  <div class="row mb-4">
+    <div class="col">
+      <h1>Instructor Recommendations Management</h1>
+      <p class="text-muted">Manage recommendation letters submitted by instructors for students</p>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0">Filter Recommendations</h4>
+    </div>
+    <div class="card-body">
+      <%= form_with url: admin_recommendation_letters_path, method: :get, class: 'row g-3', local: true do |f| %>
+        <div class="col-md-4">
+          <%= f.label :status, 'Status', class: 'form-label' %>
+          <%= f.select :status, 
+              options_for_select([
+                ['All Statuses', ''], 
+                ['Pending', 'pending'], 
+                ['Approved', 'approved'], 
+                ['Rejected', 'rejected']
+              ], selected: params[:status]), 
+              {}, { class: 'form-select', onchange: 'this.form.submit()' } %>
+        </div>
+        <div class="col-md-4">
+          <%= f.label :course_id, 'Course', class: 'form-label' %>
+          <%= f.collection_select :course_id, 
+              Course.all.order(:subject, :course_number), 
+              :id, 
+              ->(c) { "#{c.subject} #{c.course_number} - #{c.title}" }, 
+              { include_blank: 'All Courses', selected: params[:course_id] }, 
+              { class: 'form-select', onchange: 'this.form.submit()' } %>
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+          <%= f.submit 'Apply Filters', class: 'btn btn-primary' %>
+          <%= link_to 'Clear Filters', admin_recommendation_letters_path, class: 'btn btn-secondary ms-2' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <% if @recommendation_letters.any? %>
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+          <tr>
+            <th>ID</th>
+            <th>Instructor</th>
+            <th>Student</th>
+            <th>Course</th>
+            <th>Status</th>
+            <th>Submitted</th>
+            <th width="250">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @recommendation_letters.each do |letter| %>
+            <tr class="<%= letter.status == 'pending' ? 'table-warning' : (letter.status == 'approved' ? 'table-success' : 'table-danger') %>">
+              <td><%= letter.id %></td>
+              <td>
+                <strong><%= letter.instructor_name %></strong>
+                <br>
+                <small class="text-muted"><%= letter.instructor_email %></small>
+              </td>
+              <td>
+                <strong><%= letter.student_name %></strong>
+                <br>
+                <small class="text-muted"><%= letter.student_email %></small>
+              </td>
+              <td>
+                <%= link_to "#{letter.course.subject} #{letter.course.course_number}", 
+                    admin_course_path(letter.course),
+                    class: "text-decoration-none" %>
+                <br>
+                <small class="text-muted"><%= letter.course.title %></small>
+              </td>
+              <td>
+                <span class="badge <%= letter.status == 'pending' ? 'bg-warning' : (letter.status == 'approved' ? 'bg-success' : 'bg-danger') %>">
+                  <%= letter.status.titleize %>
+                </span>
+              </td>
+              <td><%= letter.created_at.strftime("%B %d, %Y") %></td>
+              <td>
+                <div class="d-flex flex-column gap-1">
+                  <%= link_to admin_recommendation_letter_path(letter), class: 'btn btn-sm btn-info' do %>
+                    <i class="bi bi-eye"></i> View Details
+                  <% end %>
+                  
+                  <% if letter.status == 'pending' %>
+                    <%= button_to admin_recommendation_letter_path(letter, status: 'approved'), 
+                        method: :patch, 
+                        class: 'btn btn-sm btn-success' do %>
+                      <i class="bi bi-check-circle"></i> Approve
+                    <% end %>
+                    
+                    <%= button_to admin_recommendation_letter_path(letter, status: 'rejected'), 
+                        method: :patch, 
+                        class: 'btn btn-sm btn-danger' do %>
+                      <i class="bi bi-x-circle"></i> Reject
+                    <% end %>
+                  <% end %>
+                  
+                  <%= button_to admin_recommendation_letter_path(letter), 
+                      method: :delete, 
+                      class: 'btn btn-sm btn-outline-danger',
+                      data: { confirm: 'Are you sure you want to delete this recommendation letter?' } do %>
+                    <i class="bi bi-trash"></i> Delete
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="alert alert-info">
+      <p class="mb-0">No recommendation letters have been submitted yet or match your filter criteria.</p>
+    </div>
+  <% end %>
+  
+  <div class="mt-4">
+    <%= link_to admin_applications_path, class: 'btn btn-secondary' do %>
+      <i class="bi bi-arrow-left"></i> Back to Applications
+    <% end %>
+    
+    <%= link_to admin_users_path, class: 'btn btn-primary ms-2' do %>
+      <i class="bi bi-house-door"></i> Back to Dashboard
+    <% end %>
+  </div>
+</div> 

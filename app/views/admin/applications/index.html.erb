@@ -1,0 +1,115 @@
+<div class="container">
+  <h1>Applications Management</h1>
+  
+  <% pending_recommendations = RecommendationLetter.where(status: 'pending').count %>
+  <% if pending_recommendations > 0 %>
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      <strong>Attention!</strong> You have <%= pending_recommendations %> pending teacher recommendation<%= pending_recommendations > 1 ? 's' : '' %> that need review.
+      <%= link_to "Review Recommendations", admin_recommendation_letters_path(status: 'pending'), class: "btn btn-sm btn-warning ms-2" %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <% end %>
+  
+  <div class="card mb-4">
+    <div class="card-header">
+      <h4>Filter Applications</h4>
+    </div>
+    <div class="card-body">
+      <%= form_with url: admin_applications_path, method: :get, class: 'row g-3', local: true do |f| %>
+        <div class="col-md-4">
+          <%= f.label :status, 'Status', class: 'form-label' %>
+          <%= f.select :status, 
+              options_for_select([
+                ['All Statuses', ''], 
+                ['Pending', 'pending'], 
+                ['Approved', 'approved'], 
+                ['Rejected', 'rejected']
+              ], selected: @status_filter), 
+              {}, { class: 'form-select', onchange: 'this.form.submit()' } %>
+        </div>
+        <div class="col-md-4">
+          <%= f.label :course_id, 'Course', class: 'form-label' %>
+          <%= f.collection_select :course_id, 
+              Course.all.order(:subject, :course_number), 
+              :id, 
+              ->(c) { "#{c.subject} #{c.course_number} - #{c.title}" }, 
+              { include_blank: 'All Courses', selected: @course_filter }, 
+              { class: 'form-select', onchange: 'this.form.submit()' } %>
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+          <%= f.submit 'Apply Filters', class: 'btn btn-primary' %>
+          <%= link_to 'Clear Filters', admin_applications_path, class: 'btn btn-secondary ms-2' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  
+  <% if @applications.any? %>
+    <div class="table-responsive">
+      <table class="table table-striped table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th>ID</th>
+            <th>Student</th>
+            <th>Course</th>
+            <th>Position</th>
+            <th>Status</th>
+            <th>Source</th>
+            <th>Submitted</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @applications.each do |application| %>
+            <% is_from_recommendation = @recommendation_applications.include?(application.id) %>
+            <tr class="<%= is_from_recommendation ? 'table-warning' : '' %>">
+              <td><%= application.id %></td>
+              <td><%= application.user.email %></td>
+              <td>
+                <%= link_to "#{application.course.subject} #{application.course.course_number}", 
+                    admin_course_path(application.course), 
+                    title: application.course.title %>
+              </td>
+              <td><%= application.position_type.titleize %></td>
+              <td>
+                <span class="badge <%= application.status == 'pending' ? 'bg-warning' : (application.status == 'approved' ? 'bg-success' : 'bg-danger') %>">
+                  <%= application.status.titleize %>
+                </span>
+              </td>
+              <td>
+                <% if is_from_recommendation %>
+                  <span class="badge bg-info" title="Submitted via instructor recommendation">Recommendation</span>
+                <% else %>
+                  <span class="badge bg-secondary">Student Application</span>
+                <% end %>
+              </td>
+              <td><%= application.created_at.strftime("%b %d, %Y") %></td>
+              <td>
+                <%= link_to 'View', admin_application_path(application), class: 'btn btn-sm btn-info' %>
+                
+                <% if application.status == 'pending' %>
+                  <%= button_to 'Approve', approve_admin_application_path(application), 
+                      method: :patch, 
+                      class: 'btn btn-sm btn-success my-1' %>
+                  <%= button_to 'Reject', reject_admin_application_path(application), 
+                      method: :patch, 
+                      class: 'btn btn-sm btn-danger' %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="alert alert-info">
+      No applications found matching your criteria.
+    </div>
+  <% end %>
+  
+  <div class="mt-4">
+    <%= link_to admin_users_path, class: 'btn btn-primary' do %>
+      <i class="bi bi-house-door"></i> Back to Dashboard
+    <% end %>
+  </div>
+</div> 

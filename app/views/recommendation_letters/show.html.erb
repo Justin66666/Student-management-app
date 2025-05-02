@@ -1,0 +1,71 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="alert alert-success mb-4">
+        <h4 class="alert-heading">Thank you for your recommendation!</h4>
+        <p>Your recommendation letter has been successfully submitted. The student will be notified if they do not already have an account in our system.</p>
+        <hr>
+        <p class="mb-0">The recommendation letter will be reviewed by the course instructor and administrators.</p>
+      </div>
+      
+      <div class="card mb-4">
+        <div class="card-header">
+          <h4>Recommendation Details</h4>
+        </div>
+        <div class="card-body">
+          <p><strong>Recommendation ID:</strong> <%= @recommendation_letter.id %></p>
+          <p><strong>Status:</strong> 
+            <span class="badge <%= @recommendation_letter.status == 'pending' ? 'bg-warning' : (@recommendation_letter.status == 'approved' ? 'bg-success' : 'bg-danger') %>">
+              <%= @recommendation_letter.status.titleize %>
+            </span>
+          </p>
+          <p><strong>Submitted on:</strong> <%= @recommendation_letter.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+        </div>
+      </div>
+      
+      <div class="card mb-4">
+        <div class="card-header">
+          <h4>Recommender Information</h4>
+        </div>
+        <div class="card-body">
+          <p><strong>Name:</strong> <%= @recommendation_letter.instructor_name %></p>
+          <p><strong>Email:</strong> <%= @recommendation_letter.instructor_email %></p>
+        </div>
+      </div>
+      
+      <div class="card mb-4">
+        <div class="card-header">
+          <h4>Student Information</h4>
+        </div>
+        <div class="card-body">
+          <p><strong>Name:</strong> <%= @recommendation_letter.student_name %></p>
+          <p><strong>Email:</strong> <%= @recommendation_letter.student_email %></p>
+        </div>
+      </div>
+      
+      <div class="card mb-4">
+        <div class="card-header">
+          <h4>Course Information</h4>
+        </div>
+        <div class="card-body">
+          <p><strong>Course:</strong> <%= @recommendation_letter.course.subject %> <%= @recommendation_letter.course.course_number %> - <%= @recommendation_letter.course.title %></p>
+        </div>
+      </div>
+      
+      <div class="card mb-4">
+        <div class="card-header">
+          <h4>Recommendation Content</h4>
+        </div>
+        <div class="card-body">
+          <div class="p-3 bg-light border rounded">
+            <%= simple_format(@recommendation_letter.content) %>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mt-4">
+        <%= link_to 'Back to Home', root_path, class: 'btn btn-primary' %>
+      </div>
+    </div>
+  </div>
+</div> 

@@ -1,0 +1,43 @@
+<div class="bg-white">
+  <div class="relative isolate px-6 pt-14 lg:px-8">
+    <div class="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
+      <div class="text-center">
+        <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+          CSE Grader Management System
+        </h1>
+        <p class="mt-6 text-lg leading-8 text-gray-600">
+          Streamline the process of matching qualified students with course sections in the CSE department.
+        </p>
+        
+        <% if user_signed_in? %>
+          <div class="mt-10">
+            <% case @user_role %>
+            <% when 'admin' %>
+              <div class="space-y-4">
+                <%= link_to "Browse Course Catalog", courses_path, class: "rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" if defined?(courses_path) %>
+                <%= link_to "Manage Applications", admin_applications_path, class: "rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" %>
+                <%= link_to "Manage Users", admin_users_path, class: "rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" if defined?(admin_users_path) %>
+                <%= link_to "Reload Course Data", admin_reload_courses_path, class: "rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" if defined?(admin_reload_courses_path) %>
+              </div>
+            <% when 'instructor' %>
+              <div class="space-y-4">
+                <%= link_to "Browse Course Catalog", courses_path, class: "rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" if defined?(courses_path) %>
+                <%= link_to "My Courses", instructor_courses_path, class: "rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" if defined?(instructor_courses_path) %>
+              </div>
+            <% when 'student' %>
+              <div class="space-y-4">
+                <%= link_to "Browse Course Catalog", courses_path, class: "rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" if defined?(courses_path) %>
+                <%= link_to "My Applications", student_applications_path, class: "rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" if defined?(student_applications_path) %>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="mt-10 flex items-center justify-center gap-x-6">
+            <%= link_to "Sign Up", new_user_registration_path, class: "rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" %>
+            <%= link_to "Log In", new_user_session_path, class: "text-sm font-semibold leading-6 text-gray-900" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div> 

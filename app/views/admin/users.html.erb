@@ -1,0 +1,105 @@
+<div class="bg-white">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <div class="sm:flex sm:items-center">
+      <div class="sm:flex-auto">
+        <h1 class="text-3xl font-semibold leading-6 text-gray-900">User Management</h1>
+        <p class="mt-2 text-sm text-gray-700">Manage user accounts and approve instructor/admin requests.</p>
+      </div>
+    </div>
+
+    <!-- Pending Approvals -->
+    <div class="mt-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-6">Pending Approvals</h2>
+      
+      <% if @pending_users.any? %>
+        <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
+          <table class="min-w-full divide-y divide-gray-300">
+            <thead class="bg-gray-50">
+              <tr>
+                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Email</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Role</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Requested At</th>
+                <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                  <span class="sr-only">Actions</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 bg-white">
+              <% @pending_users.each do |user| %>
+                <tr>
+                  <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                    <%= user.email %>
+                  </td>
+                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                    <%= user.role.titleize %>
+                  </td>
+                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                    <%= user.created_at.strftime("%B %d, %Y") %>
+                  </td>
+                  <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                    <div class="flex justify-end space-x-3">
+                      <%= button_to "Approve",
+                          approve_user_admin_path(user),
+                          method: :patch,
+                          class: "text-green-600 hover:text-green-900",
+                          data: { confirm: "Are you sure you want to approve this user?" } %>
+                      <%= button_to "Reject",
+                          reject_user_admin_path(user),
+                          method: :delete,
+                          class: "text-red-600 hover:text-red-900",
+                          data: { confirm: "Are you sure you want to reject this user?" } %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <p class="text-gray-500 text-sm">No pending approval requests.</p>
+      <% end %>
+    </div>
+
+    <!-- Approved Users -->
+    <div class="mt-12">
+      <h2 class="text-xl font-semibold text-gray-900 mb-6">Approved Users</h2>
+      
+      <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
+        <table class="min-w-full divide-y divide-gray-300">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Email</th>
+              <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Role</th>
+              <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Approved At</th>
+              <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                <span class="sr-only">Actions</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200 bg-white">
+            <% @approved_users.each do |user| %>
+              <tr>
+                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                  <%= user.email %>
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  <%= user.role.titleize %>
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  <%= user.updated_at.strftime("%B %d, %Y") %>
+                </td>
+                <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                  <%= button_to "Remove",
+                      reject_user_admin_path(user),
+                      method: :delete,
+                      class: "text-red-600 hover:text-red-900",
+                      data: { confirm: "Are you sure you want to remove this user?" } %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div> 

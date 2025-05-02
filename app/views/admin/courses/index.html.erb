@@ -1,0 +1,53 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold">Courses Administration</h1>
+    <div>
+      <%= link_to admin_users_path, class: "bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2" do %>
+        <i class="bi bi-house-door"></i> Back to Dashboard
+      <% end %>
+      <%= link_to "Reload Courses", admin_courses_reload_path, class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+    </div>
+  </div>
+
+  <% if @courses.any? %>
+    <div class="bg-white shadow-md rounded my-6">
+      <table class="min-w-full table-auto">
+        <thead>
+          <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+            <th class="py-3 px-6 text-left">Subject</th>
+            <th class="py-3 px-6 text-left">Number</th>
+            <th class="py-3 px-6 text-left">Title</th>
+            <th class="py-3 px-6 text-left">Term</th>
+            <th class="py-3 px-6 text-left">Campus</th>
+          </tr>
+        </thead>
+        <tbody class="text-gray-600 text-sm font-light">
+          <% @courses.each do |course| %>
+            <tr class="border-b border-gray-200 hover:bg-gray-100">
+              <td class="py-3 px-6"><%= course.subject %></td>
+              <td class="py-3 px-6"><%= course.course_number %></td>
+              <td class="py-3 px-6"><%= course.title %></td>
+              <td class="py-3 px-6"><%= course.term %></td>
+              <td class="py-3 px-6"><%= course.campus %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 my-6">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+          </svg>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm text-yellow-700">
+            No courses found. Use the "Reload Courses" button to fetch courses from the API.
+          </p>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div> 

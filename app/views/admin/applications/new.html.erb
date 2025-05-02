@@ -1,0 +1,74 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <h1>Create Application for Student</h1>
+      
+      <%= form_with(model: [@course, @application], url: admin_course_applications_path(@course), local: true, class: 'mt-4') do |f| %>
+        <% if @application.errors.any? %>
+          <div class="alert alert-danger">
+            <h2><%= pluralize(@application.errors.count, "error") %> prohibited this application from being saved:</h2>
+            <ul>
+              <% @application.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+        
+        <div class="card mb-4">
+          <div class="card-header">
+            <h4>Student Information</h4>
+          </div>
+          <div class="card-body">
+            <% if @student %>
+              <p><strong>Student:</strong> <%= @student.email %></p>
+              <%= f.hidden_field :user_id, value: @student.id %>
+            <% else %>
+              <div class="mb-3">
+                <%= f.label :user_id, 'Student', class: 'form-label' %>
+                <%= f.collection_select :user_id, User.where(role: :student), :id, :email, { prompt: 'Select a student' }, { class: 'form-select' } %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+        
+        <div class="card mb-4">
+          <div class="card-header">
+            <h4>Application Details</h4>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <%= f.label :position_type, 'Position', class: 'form-label' %>
+              <%= f.select :position_type, options_for_select([['Grader', 'grader'], ['Teaching Assistant', 'teaching_assistant'], ['Lab Assistant', 'lab_assistant']]), { prompt: 'Select a position' }, { class: 'form-select' } %>
+            </div>
+            
+            <div class="mb-3">
+              <%= f.label :experience, 'Experience', class: 'form-label' %>
+              <%= f.text_area :experience, class: 'form-control', rows: 4, placeholder: 'Describe student\'s experience' %>
+            </div>
+            
+            <div class="mb-3">
+              <%= f.label :programming_languages, 'Programming Languages', class: 'form-label' %>
+              <%= f.text_field :programming_languages, class: 'form-control', placeholder: 'e.g., Java, Python, C++' %>
+            </div>
+            
+            <div class="mb-3">
+              <%= f.label :available_hours, 'Available Hours per Week', class: 'form-label' %>
+              <%= f.number_field :available_hours, class: 'form-control', min: 1, max: 40 %>
+            </div>
+            
+            <div class="mb-3">
+              <%= f.label :status, 'Status', class: 'form-label' %>
+              <%= f.select :status, options_for_select([['Pending', 'pending'], ['Approved', 'approved'], ['Rejected', 'rejected']], 'approved'), {}, { class: 'form-select' } %>
+            </div>
+          </div>
+        </div>
+        
+        <div class="d-flex justify-content-between mt-4">
+          <%= link_to 'Back', :back, class: 'btn btn-secondary' %>
+          <%= f.submit 'Create Application', class: 'btn btn-primary' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div> 

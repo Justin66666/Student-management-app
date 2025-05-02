@@ -1,0 +1,42 @@
+<div class="row">
+  <div class="col">
+    <h1>My Courses</h1>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col">
+    <% if @courses.any? %>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Course Number</th>
+              <th>Title</th>
+              <th>Term</th>
+              <th>Campus</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @courses.each do |course| %>
+              <tr>
+                <td><%= course.subject %> <%= course.course_number %></td>
+                <td><%= course.title %></td>
+                <td><%= course.formatted_term %></td>
+                <td><%= course.formatted_campus %></td>
+                <td>
+                  <%= link_to 'View Applications', instructor_course_path(course), class: 'btn btn-sm btn-primary' %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="alert alert-info">
+        No courses available at this time.
+      </div>
+    <% end %>
+  </div>
+</div> 
