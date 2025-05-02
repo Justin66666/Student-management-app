@@ -102,4 +102,3 @@ Use the **Reload Courses** functionality from the admin dashboard to load course
 
 ## Known Issues
 - Occasionally, Bootstrap styling may temporarily disappear after interacting with dropdowns (e.g., sorting the course catalog). This is caused by a Rails/Turbo rendering conflict, not a coding error.
-
